@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">AI Intern</string>
+    <string name="enter_instruction">Enter instruction...</string>
+    <string name="send">Send</string>
+    <string name="message">Message</string>
+    <string name="time">Time</string>
+    <string name="progress">Progress</string>
+    <string name="settings">Settings</string>
+    <string name="agent_server_settings">Agent Server Settings</string>
+    <string name="server_ip_e_g_100_xx_xx_xx">Server IP (e.g., 100.xx.xx.xx)</string>
+    <string name="port_e_g_5000">Port (e.g., 5000)</string>
+    <string name="number_of_screenshots_to_retrieve">Number of screenshots to retrieve</string>
+    <string name="save_settings">Save Settings</string>
+</resources>
