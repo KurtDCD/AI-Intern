@@ -29,7 +29,7 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // --- Load host settings from SharedPreferences ---
+        // Load saved host settings
         val prefs = getSharedPreferences(SettingsActivity.PREFS_NAME, Context.MODE_PRIVATE)
         val ip = prefs.getString(SettingsActivity.KEY_SERVER_IP, null)
         val port = prefs.getString(SettingsActivity.KEY_SERVER_PORT, null)
@@ -41,7 +41,7 @@ class MainActivity : AppCompatActivity() {
             Log.d("MainActivity", "No saved host settings; using default.")
         }
 
-        // --- Set up toolbar menu actions ---
+        // Set up toolbar menu actions
         binding.topAppBar.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.action_settings -> {
@@ -56,12 +56,12 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        // --- Set up RecyclerView ---
+        // Set up RecyclerView
         chatAdapter = ChatAdapter(chatMessages)
         binding.chatRecyclerView.layoutManager = LinearLayoutManager(this)
         binding.chatRecyclerView.adapter = chatAdapter
 
-        // --- Handle send button click ---
+        // Handle send button click
         binding.sendButton.setOnClickListener {
             val text = binding.messageEditText.text.toString().trim()
             if (text.isNotEmpty()) {
@@ -73,7 +73,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        // --- Start polling agent status ---
+        // Start polling agent status
         startPollingStatus()
     }
 
@@ -82,10 +82,13 @@ class MainActivity : AppCompatActivity() {
         addChatMessage(ChatMessage("user", instructionText, System.currentTimeMillis()))
         RetrofitClient.api.sendInstruction(InstructionRequest(instructionText))
             .enqueue(object : Callback<InstructionResponse> {
-                override fun onResponse(call: Call<InstructionResponse>, response: Response<InstructionResponse>) {
+                override fun onResponse(
+                    call: Call<InstructionResponse>,
+                    response: Response<InstructionResponse>
+                ) {
                     if (response.isSuccessful) {
                         Log.d("MainActivity", "sendInstruction onResponse: ${response.body()}")
-                        // If needed, you could add the agent's reply here if the server returns one.
+                        // You may choose to add an agent response here if your server returns one.
                     } else {
                         Log.e("MainActivity", "sendInstruction onResponse not successful")
                         addChatMessage(

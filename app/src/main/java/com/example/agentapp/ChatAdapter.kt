@@ -26,28 +26,35 @@ class ChatAdapter(private val messages: List<ChatMessage>) :
         val msg = messages[position]
         holder.binding.messageTextView.text = msg.message
 
-        // Set the bubble background based on the sender.
-        when (msg.sender) {
-            "user" -> holder.binding.bubbleContainer.setBackgroundResource(R.drawable.chat_bubble_user)
-            "agent" -> holder.binding.bubbleContainer.setBackgroundResource(R.drawable.chat_bubble_agent)
-            "system" -> holder.binding.bubbleContainer.setBackgroundResource(R.drawable.chat_bubble_system)
-            else -> holder.binding.bubbleContainer.setBackgroundResource(R.drawable.chat_bubble_background)
+        // Adjust bubble alignment based on sender.
+        val params = holder.binding.bubbleContainer.layoutParams as androidx.constraintlayout.widget.ConstraintLayout.LayoutParams
+        if (msg.sender == "user") {
+            params.endToEnd = androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.PARENT_ID
+            params.startToStart = androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.UNSET
+            holder.binding.bubbleContainer.setBackgroundResource(R.drawable.chat_bubble_user)
+        } else if (msg.sender == "agent") {
+            params.startToStart = androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.PARENT_ID
+            params.endToEnd = androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.UNSET
+            holder.binding.bubbleContainer.setBackgroundResource(R.drawable.chat_bubble_agent)
         }
+        holder.binding.bubbleContainer.layoutParams = params
 
-        // Format the timestamp.
+        // Format timestamp.
         val sdf = SimpleDateFormat("hh:mm a", Locale.getDefault())
         holder.binding.timestampTextView.text = sdf.format(Date(msg.timestamp))
 
-        // If there's an image, decode and display it; otherwise hide the ImageView.
+        // If there is an image, decode and display it.
         if (!msg.imageBase64.isNullOrEmpty()) {
             val imageBytes = Base64.decode(msg.imageBase64, Base64.DEFAULT)
             val bitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
             holder.binding.progressImageView.setImageBitmap(bitmap)
-            holder.binding.progressImageView.visibility = View.VISIBLE
+            holder.binding.progressImageView.visibility = android.view.View.VISIBLE
         } else {
-            holder.binding.progressImageView.visibility = View.GONE
+            holder.binding.progressImageView.visibility = android.view.View.GONE
         }
     }
+
+
 
     override fun getItemCount(): Int = messages.size
 }

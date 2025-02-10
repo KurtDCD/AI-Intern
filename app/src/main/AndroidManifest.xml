@@ -21,10 +21,12 @@
         <activity
             android:name=".SettingsActivity"
             android:exported="false" />
+        <activity
+            android:name=".ChatActivity"
+            android:exported="false" />
 
         <!-- The launcher activity requires android:exported="true" -->
-        <activity
-            android:name=".MainActivity"
+        <activity android:name=".ChatListActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>

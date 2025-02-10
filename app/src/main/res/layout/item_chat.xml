@@ -1,29 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
     android:padding="8dp">
 
-    <!-- Chat bubble container -->
     <LinearLayout
         android:id="@+id/bubbleContainer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/chat_bubble_background"
-        android:padding="8dp"
-        android:orientation="vertical">
-
+        android:padding="12dp"
+        android:orientation="vertical"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:background="@drawable/chat_bubble_background">
         <TextView
             android:id="@+id/messageTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/message"
-            android:textColor="@android:color/black" />
+            android:text="Message"
+            android:textColor="@android:color/black"
+            android:textSize="16sp"/>
     </LinearLayout>
 
-    <!-- Optional image view for progress screenshots -->
     <ImageView
         android:id="@+id/progressImageView"
         android:layout_width="200dp"
@@ -32,13 +34,16 @@
         android:scaleType="centerCrop"
         android:visibility="gone"/>
 
-    <!-- Timestamp text -->
+
     <TextView
         android:id="@+id/timestampTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/time"
-        android:textSize="11sp"
+        android:text="Time"
+        android:textSize="10sp"
         android:textColor="@android:color/darker_gray"
+        app:layout_constraintTop_toBottomOf="@id/bubbleContainer"
+        app:layout_constraintEnd_toEndOf="@id/bubbleContainer"
+        app:layout_constraintStart_toStartOf="@id/bubbleContainer"
         android:layout_marginTop="4dp"/>
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
