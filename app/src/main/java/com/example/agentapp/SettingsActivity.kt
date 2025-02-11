@@ -6,8 +6,10 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.example.agentapp.databinding.ActivitySettingsBinding
+import com.google.android.material.snackbar.Snackbar
 
 class SettingsActivity : AppCompatActivity() {
+
     private lateinit var binding: ActivitySettingsBinding
     private lateinit var prefs: SharedPreferences
 
@@ -41,9 +43,12 @@ class SettingsActivity : AppCompatActivity() {
                 apply()
             }
 
+            Snackbar.make(binding.root, "Changes will take effect on the next interaction.", Snackbar.LENGTH_SHORT).show()
+
             val newUrl = "http://$ip:$port/"
             RetrofitClient.setBaseUrl(newUrl)
-            finish()
+
+            binding.root.postDelayed({ finish() }, 1500)
         }
     }
 }

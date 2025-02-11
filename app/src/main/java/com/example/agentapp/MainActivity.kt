@@ -14,6 +14,9 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.text.SimpleDateFormat
 import java.util.*
+import com.example.agentapp.SettingsActivity.Companion.KEY_SERVER_IP
+import com.example.agentapp.SettingsActivity.Companion.KEY_SERVER_PORT
+import com.example.agentapp.SettingsActivity.Companion.PREFS_NAME
 
 class MainActivity : AppCompatActivity() {
 
