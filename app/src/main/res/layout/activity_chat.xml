@@ -2,37 +2,19 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/coordinatorLayout"
+    android:id="@+id/chatCoordinatorLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- Top app bar (shows the agent’s name) -->
-    <com.google.android.material.appbar.MaterialToolbar
-        android:id="@+id/topAppBar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        app:navigationIcon="?attr/homeAsUpIndicator"
-        android:background="?attr/colorPrimary" />
-
-    <!-- Horizontal progress images area -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/progressRecyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:layout_marginTop="?attr/actionBarSize"
-        android:padding="8dp"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-
-    <!-- Chat messages RecyclerView -->
+    <!-- RecyclerView for the chat conversation -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/chatRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="108dp"
-        android:layout_marginBottom="80dp"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        android:layout_marginBottom="70dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
-    <!-- Input area at the bottom -->
+    <!-- Input area styled like iOS Messages -->
     <LinearLayout
         android:id="@+id/inputLayout"
         android:layout_width="match_parent"
@@ -40,33 +22,26 @@
         android:layout_gravity="bottom"
         android:orientation="horizontal"
         android:padding="8dp"
-        android:background="#FFFFFF">
+        android:background="@android:color/white">
 
-        <!-- Rounded input field styled to resemble iOS -->
-        <androidx.cardview.widget.CardView
-            android:id="@+id/inputCard"
+        <EditText
+            android:id="@+id/messageEditText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:cardCornerRadius="20dp"
-            app:cardElevation="4dp"
             android:layout_weight="1"
-            android:layout_marginEnd="8dp">
-            <EditText
-                android:id="@+id/messageEditText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="iMessage"
-                android:padding="12dp"
-                android:background="@android:color/transparent"
-                android:inputType="textMultiLine"
-                android:maxLines="3"/>
-        </androidx.cardview.widget.CardView>
+            android:background="@drawable/ios_input_background"
+            android:hint="Enter instruction..."
+            android:inputType="textMultiLine"
+            android:maxLines="4"
+            android:padding="12dp" />
 
-        <Button
+        <ImageButton
             android:id="@+id/sendButton"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Send"/>
+            android:layout_height="match_parent"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Send"
+            android:src="@android:drawable/ic_menu_send" />
     </LinearLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -1,49 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/chatItemRoot"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="8dp">
 
+    <!-- Chat bubble container -->
     <LinearLayout
         android:id="@+id/bubbleContainer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="12dp"
         android:orientation="vertical"
+        android:padding="8dp"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/timestampTextView"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:background="@drawable/chat_bubble_background">
+        app:layout_constraintEnd_toEndOf="parent">
         <TextView
             android:id="@+id/messageTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Message"
-            android:textColor="@android:color/black"
-            android:textSize="16sp"/>
+            android:textColor="@android:color/black"/>
     </LinearLayout>
 
+    <!-- Optional image view for progress screenshots -->
     <ImageView
         android:id="@+id/progressImageView"
         android:layout_width="200dp"
         android:layout_height="200dp"
-        android:layout_marginTop="4dp"
         android:scaleType="centerCrop"
-        android:visibility="gone"/>
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/bubbleContainer"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
-
+    <!-- Timestamp text -->
     <TextView
         android:id="@+id/timestampTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Time"
-        android:textSize="10sp"
+        android:textSize="11sp"
         android:textColor="@android:color/darker_gray"
-        app:layout_constraintTop_toBottomOf="@id/bubbleContainer"
-        app:layout_constraintEnd_toEndOf="@id/bubbleContainer"
-        app:layout_constraintStart_toStartOf="@id/bubbleContainer"
-        android:layout_marginTop="4dp"/>
+        app:layout_constraintTop_toBottomOf="@id/progressImageView"
+        app:layout_constraintEnd_toEndOf="parent"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

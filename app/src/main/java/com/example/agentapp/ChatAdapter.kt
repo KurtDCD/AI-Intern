@@ -2,8 +2,8 @@ package com.example.agentapp
 
 import android.graphics.BitmapFactory
 import android.util.Base64
+import android.view.Gravity
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.agentapp.databinding.ItemChatBinding
@@ -26,24 +26,43 @@ class ChatAdapter(private val messages: List<ChatMessage>) :
         val msg = messages[position]
         holder.binding.messageTextView.text = msg.message
 
-        // Adjust bubble alignment based on sender.
-        val params = holder.binding.bubbleContainer.layoutParams as androidx.constraintlayout.widget.ConstraintLayout.LayoutParams
-        if (msg.sender == "user") {
-            params.endToEnd = androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.PARENT_ID
-            params.startToStart = androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.UNSET
-            holder.binding.bubbleContainer.setBackgroundResource(R.drawable.chat_bubble_user)
-        } else if (msg.sender == "agent") {
-            params.startToStart = androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.PARENT_ID
-            params.endToEnd = androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.UNSET
-            holder.binding.bubbleContainer.setBackgroundResource(R.drawable.chat_bubble_agent)
+        // Adjust bubble background and alignment based on sender.
+        val layoutParams = holder.binding.bubbleContainer.layoutParams as ViewGroup.MarginLayoutParams
+        when (msg.sender) {
+            "user" -> {
+                holder.binding.bubbleContainer.setBackgroundResource(R.drawable.chat_bubble_user)
+                layoutParams.marginStart = 50
+                layoutParams.marginEnd = 8
+                holder.binding.bubbleContainer.layoutParams = layoutParams
+                // Align to right:
+                holder.binding.bubbleContainer.gravity = Gravity.END
+            }
+            "agent" -> {
+                holder.binding.bubbleContainer.setBackgroundResource(R.drawable.chat_bubble_agent)
+                layoutParams.marginStart = 8
+                layoutParams.marginEnd = 50
+                holder.binding.bubbleContainer.layoutParams = layoutParams
+                holder.binding.bubbleContainer.gravity = Gravity.START
+            }
+            "system" -> {
+                holder.binding.bubbleContainer.setBackgroundResource(R.drawable.chat_bubble_system)
+                layoutParams.marginStart = 8
+                layoutParams.marginEnd = 8
+                holder.binding.bubbleContainer.layoutParams = layoutParams
+                holder.binding.bubbleContainer.gravity = Gravity.CENTER
+            }
+            else -> {
+                holder.binding.bubbleContainer.setBackgroundResource(R.drawable.chat_bubble_background)
+                layoutParams.marginStart = 8
+                layoutParams.marginEnd = 8
+                holder.binding.bubbleContainer.layoutParams = layoutParams
+                holder.binding.bubbleContainer.gravity = Gravity.START
+            }
         }
-        holder.binding.bubbleContainer.layoutParams = params
 
-        // Format timestamp.
         val sdf = SimpleDateFormat("hh:mm a", Locale.getDefault())
         holder.binding.timestampTextView.text = sdf.format(Date(msg.timestamp))
 
-        // If there is an image, decode and display it.
         if (!msg.imageBase64.isNullOrEmpty()) {
             val imageBytes = Base64.decode(msg.imageBase64, Base64.DEFAULT)
             val bitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
@@ -53,8 +72,6 @@ class ChatAdapter(private val messages: List<ChatMessage>) :
             holder.binding.progressImageView.visibility = android.view.View.GONE
         }
     }
-
-
 
     override fun getItemCount(): Int = messages.size
 }

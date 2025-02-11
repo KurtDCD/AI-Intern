@@ -14,19 +14,12 @@
         android:theme="@style/Theme.AgentApp"
         android:usesCleartextTraffic="true">
 
-        <activity
-            android:name=".ProgressActivity"
-            android:exported="false" />
-
-        <activity
-            android:name=".SettingsActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ChatActivity"
-            android:exported="false" />
+        <activity android:name=".AgentSettingsActivity" />
+        <activity android:name=".ChatActivity" />
+        <activity android:name=".ProgressActivity" />
 
         <!-- The launcher activity requires android:exported="true" -->
-        <activity android:name=".ChatListActivity"
+        <activity android:name=".ChatsActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>

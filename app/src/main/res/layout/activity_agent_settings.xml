@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Agent Settings"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="16dp"/>
+
+        <EditText
+            android:id="@+id/nameEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Agent Name"
+            android:inputType="text"/>
+
+        <EditText
+            android:id="@+id/ipEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Server IP (e.g., 100.xx.xx.xx)"
+            android:inputType="text"/>
+
+        <EditText
+            android:id="@+id/portEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Port (e.g., 5000)"
+            android:inputType="number"/>
+
+        <EditText
+            android:id="@+id/screenshotCountEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Number of screenshots to retrieve"
+            android:inputType="number"
+            android:layout_marginTop="8dp"/>
+
+        <Button
+            android:id="@+id/saveSettingsButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Save Settings"
+            android:layout_marginTop="16dp"/>
+    </LinearLayout>
+
+</ScrollView>
