@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <!-- The progress menu item uses a custom action layout so we can attach a long click listener -->
+    <item
+        android:id="@+id/action_progress"
+        android:title="Progress"
+        android:icon="@drawable/eye_icon"
+        android:actionLayout="@layout/custom_menu_progress"
+        app:showAsAction="always" />
+</menu>

@@ -1,15 +1,27 @@
 package com.example.agentapp
 
+import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Typeface
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.text.SpannableString
-import android.text.style.ForegroundColorSpan
+import android.text.Spannable
+import android.text.SpannableStringBuilder
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
+import android.widget.TextView
+import android.widget.ImageButton
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.agentapp.databinding.ActivityChatBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import android.text.style.RelativeSizeSpan
 import com.google.android.material.snackbar.Snackbar
 import retrofit2.Call
 import retrofit2.Callback
@@ -36,10 +48,30 @@ class ChatActivity : AppCompatActivity() {
     // Flag for the typing bubble (for agent thoughts)
     private var isTypingBubbleVisible = false
 
+    // Reference to the persistent task bar view
+    private lateinit var taskBar: View
+    private lateinit var tvTaskInfo: TextView
+    private lateinit var btnStopTask: ImageButton
+    private lateinit var btnProgress: ImageButton
+
+    // A timer for the elapsed time
+    private var startTime: Long = 0
+    private val timerHandler = Handler(Looper.getMainLooper())
+    private val timerRunnable = object : Runnable {
+        override fun run() {
+            val elapsedMillis = System.currentTimeMillis() - startTime
+            tvTaskInfo.text = "${agent?.name} • ${formatElapsedTime(elapsedMillis)}"
+            timerHandler.postDelayed(this, 1000)
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityChatBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        // Set the toolbar as the ActionBar
+        setSupportActionBar(binding.topAppBar)
 
         // Retrieve the agent from our repository.
         val agentId = intent.getIntExtra("agentId", -1)
@@ -68,26 +100,91 @@ class ChatActivity : AppCompatActivity() {
             }
         }
 
-        // Set up a FAB to show progress history inside the chat.
-        binding.progressFab.setOnClickListener {
-            showProgressDialog()
-        }
 
         startPollingStatus()
         startPollingThoughts()
+
+        // Get references to the task bar and its children
+        taskBar = findViewById(R.id.taskStatusBarInclude)
+        tvTaskInfo = taskBar.findViewById(R.id.tvTaskInfo)
+        btnStopTask = taskBar.findViewById(R.id.btnStopTask)
+        btnProgress = taskBar.findViewById(R.id.btnProgress)
+
+        // Set click listeners for the icons and the bar (for example, tap on the text)
+        btnStopTask.setOnClickListener { stopTask() }
+        btnProgress.setOnClickListener { openProgressScreen() }
+        taskBar.setOnClickListener { navigateToChat() }
+
+        // Initially hide the task bar (it will be shown when a task is running)
+        taskBar.visibility = View.GONE
     }
+
+
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.chat_menu, menu)
+        // Retrieve the progress item’s custom view.
+        val progressItem = menu.findItem(R.id.action_progress)
+        progressItem?.actionView?.let { view ->
+            // Set a long click listener to show the help message.
+            view.setOnLongClickListener {
+                Snackbar.make(binding.chatCoordinatorLayout, "Check progress", Snackbar.LENGTH_SHORT).show()
+                true
+            }
+            // Set a normal click listener to open the progress screen.
+            view.setOnClickListener {
+                openProgressScreen()
+            }
+        }
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_progress -> {
+                openProgressScreen()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+
+
 
     /**
      * Updates the action bar’s subtitle with a colored status indicator.
      * If status is null or not provided, it will display "Offline".
      */
     private fun updateActionBarStatus(status: AgentStatus?) {
-        val statusStr = when (status?.state) {
-            "running", "idle" -> "🟢 Online"
-            "error" -> "🔴 Error"
-            else -> "⚪ Offline"
+        val drawableRes = when (status?.state) {
+            "running", "idle" -> R.drawable.ic_circle_green
+            "error" -> R.drawable.ic_circle_red
+            else -> R.drawable.ic_circle_white
         }
-        supportActionBar?.subtitle = statusStr
+        val statusIcon = AppCompatResources.getDrawable(this, drawableRes)
+
+        // Get the color for the text.
+        val textColorRes = when (status?.state) {
+            "running", "idle" -> R.color.text_online
+            "error" -> R.color.text_error
+            else -> R.color.text_offline
+        }
+        val statusTextColor = ContextCompat.getColor(this, textColorRes)
+
+        val statusText = when (status?.state) {
+            "running", "idle" ->  " Online"
+            "error" -> " Error"
+            else -> " Offline"
+        }
+
+        val statusStr = "$statusText"
+
+        val spannable = SpannableStringBuilder("  $statusStr")
+        val spannable = SpannableStringBuilder(statusStr)
+        val circleSize = 0.8f // Adjust this value to change the size of the circle
+        spannable.setSpan(RelativeSizeSpan(circleSize), 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        supportActionBar?.subtitle = spannable
     }
 
     private fun sendInstruction(instructionText: String) {
@@ -166,6 +263,50 @@ class ChatActivity : AppCompatActivity() {
         })
     }
 
+    // Call this function when a task starts (e.g., when an agent’s state becomes "running")
+    private fun showTaskBar() {
+        if (taskBar.visibility != View.VISIBLE) {
+            taskBar.visibility = View.VISIBLE
+            // record the start time for the timer (or retrieve it if already stored)
+            startTime = System.currentTimeMillis()
+            timerHandler.post(timerRunnable)
+        }
+    }
+
+    // Call this function when the task ends or stops
+    private fun hideTaskBar() {
+        taskBar.visibility = View.GONE
+        timerHandler.removeCallbacks(timerRunnable)
+    }
+
+    // Formats milliseconds to a string mm:ss
+    private fun formatElapsedTime(ms: Long): String {
+        val seconds = ms / 1000
+        val minutes = seconds / 60
+        val remSeconds = seconds % 60
+        return String.format("%02d:%02d", minutes, remSeconds)
+    }
+
+    // Function to stop the task (invoked when stop icon is pressed)
+    private fun stopTask() {
+        // Here you would call your API to stop the agent’s task.
+        // For now, show a banner and hide the bar.
+        Snackbar.make(findViewById(R.id.chatCoordinatorLayout), "Task stopped", Snackbar.LENGTH_SHORT).show()
+        hideTaskBar()
+    }
+
+    // Function to open the progress screen for the current run.
+    private fun openProgressScreen() {
+        // Navigate to your ProgressActivity (or a dedicated current-run progress screen)
+        startActivity(Intent(this, ProgressActivity::class.java))
+    }
+
+    // Function to navigate back to the chat screen if the task bar is tapped (excluding the icons)
+    private fun navigateToChat() {
+        // Since you are already in ChatActivity, you might simply scroll to the bottom.
+        binding.chatRecyclerView.smoothScrollToPosition(agent?.conversation?.size ?: 0)
+    }
+
     private fun handleAgentStateChange(status: AgentStatus) {
         when (status.state) {
             "waiting_for_user" -> {
@@ -174,11 +315,16 @@ class ChatActivity : AppCompatActivity() {
                 removeTypingBubble()
             }
             "finished" -> {
+                hideTaskBar()
                 NotificationHelper.showNotification(this, "Task Finished", status.message)
                 addChatMessage(ChatMessage("system", "Task finished: ${status.message}", System.currentTimeMillis()))
                 removeTypingBubble()
             }
             // For a "running" state we let the typing bubble logic (below) handle things.
+            "running" -> {
+                // Show the persistent task bar if not already visible.
+                showTaskBar()
+            }
             else -> {
                 addChatMessage(ChatMessage("system", "Agent state: ${status.state}", System.currentTimeMillis()))
             }

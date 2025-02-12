@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/taskStatusBar"
+    android:layout_width="match_parent"
+    android:layout_height="48dp"
+    android:background="@color/purple_500"
+    android:paddingStart="8dp"
+    android:paddingEnd="8dp">
+
+    <!-- The stop icon on the left -->
+    <ImageButton
+        android:id="@+id/btnStopTask"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:tint="@color/red"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:src="@drawable/stop_icon"
+        android:contentDescription="Stop Task"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <!-- The text with agent name and timer in the center -->
+    <TextView
+        android:id="@+id/tvTaskInfo"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Agent Name • 00:00"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        android:gravity="center"
+        app:layout_constraintStart_toEndOf="@id/btnStopTask"
+        app:layout_constraintEnd_toStartOf="@id/btnProgress"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <!-- The eye icon on the right -->
+    <ImageButton
+        android:id="@+id/btnProgress"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:src="@drawable/eye_icon"
+        android:contentDescription="View Progress"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

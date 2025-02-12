@@ -6,15 +6,45 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- RecyclerView for the chat conversation -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/chatRecyclerView"
+    <!-- Container for the persistent task bar, app bar, and chat RecyclerView -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/containerLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginBottom="70dp"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+        android:layout_height="match_parent">
 
-    <!-- Input area styled like iOS Messages -->
+        <!-- Persistent Task Bar (initially gone) -->
+        <include
+            android:id="@+id/taskStatusBarInclude"
+            layout="@layout/persistent_task_bar"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- App Bar with Toolbar -->
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/topAppBar"
+            android:layout_width="0dp"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:title="Agent Chat"
+            app:menu="@menu/chat_menu"
+            app:layout_constraintTop_toBottomOf="@id/taskStatusBarInclude"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <!-- RecyclerView for the chat conversation -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/chatRecyclerView"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintTop_toBottomOf="@id/topAppBar"
+            app:layout_constraintBottom_toTopOf="@+id/inputLayout"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- Input area (fixed at the bottom) -->
     <LinearLayout
         android:id="@+id/inputLayout"
         android:layout_width="match_parent"
@@ -23,7 +53,6 @@
         android:orientation="horizontal"
         android:padding="8dp"
         android:background="#00FFFFFF">
-
         <EditText
             android:id="@+id/messageEditText"
             android:layout_width="0dp"
@@ -34,7 +63,6 @@
             android:inputType="textMultiLine"
             android:maxLines="4"
             android:padding="12dp" />
-
         <ImageButton
             android:id="@+id/sendButton"
             android:layout_width="wrap_content"
@@ -43,15 +71,5 @@
             android:contentDescription="Send"
             android:src="@android:drawable/ic_menu_send" />
     </LinearLayout>
-
-    <!-- FloatingActionButton for progress history -->
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/progressFab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:src="@android:drawable/ic_menu_gallery"
-        app:layout_anchor="@id/chatRecyclerView"
-        app:layout_anchorGravity="bottom|end" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

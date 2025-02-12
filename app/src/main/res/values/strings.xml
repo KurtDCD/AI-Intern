@@ -11,4 +11,5 @@
     <string name="port_e_g_5000">Port (e.g., 5000)</string>
     <string name="number_of_screenshots_to_retrieve">Number of screenshots to retrieve</string>
     <string name="save_settings">Save Settings</string>
+    <string name="check_progress_hint">Check progress</string>
 </resources>
