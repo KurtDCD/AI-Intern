@@ -22,7 +22,7 @@
         android:layout_gravity="bottom"
         android:orientation="horizontal"
         android:padding="8dp"
-        android:background="@android:color/white">
+        android:background="#00FFFFFF">
 
         <EditText
             android:id="@+id/messageEditText"
@@ -43,5 +43,15 @@
             android:contentDescription="Send"
             android:src="@android:drawable/ic_menu_send" />
     </LinearLayout>
+
+    <!-- FloatingActionButton for progress history -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/progressFab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:src="@android:drawable/ic_menu_gallery"
+        app:layout_anchor="@id/chatRecyclerView"
+        app:layout_anchorGravity="bottom|end" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
