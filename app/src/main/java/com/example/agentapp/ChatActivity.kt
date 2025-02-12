@@ -15,6 +15,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
 import android.widget.ImageButton
+import android.widget.ImageView
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -65,13 +66,26 @@ class ChatActivity : AppCompatActivity() {
         }
     }
 
+    private lateinit var customToolbarView: View
+    private lateinit var tvAgentName: TextView
+    private lateinit var ivStatusIcon: ImageView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityChatBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Set the toolbar as the ActionBar
+        // Set up the toolbar (we’re using our custom toolbar layout)
         setSupportActionBar(binding.topAppBar)
+        supportActionBar?.apply {
+            // Enable custom view display
+            setDisplayShowCustomEnabled(true)
+            customToolbarView = layoutInflater.inflate(R.layout.custom_toolbar, null)
+            customView = customToolbarView
+        }
+        // Get references from the custom toolbar view
+        tvAgentName = customToolbarView.findViewById(R.id.agentNameTextView)
+        ivStatusIcon = customToolbarView.findViewById(R.id.statusIcon)
 
         // Retrieve the agent from our repository.
         val agentId = intent.getIntExtra("agentId", -1)
@@ -84,7 +98,6 @@ class ChatActivity : AppCompatActivity() {
         // Set the action bar title to the agent’s name.
         supportActionBar?.title = agent!!.name
         // Set an initial subtitle (we’ll update it as we poll)
-        updateActionBarStatus(null)
 
         // Set up the chat RecyclerView using the agent’s conversation list.
         chatAdapter = ChatAdapter(agent!!.conversation)
@@ -149,43 +162,6 @@ class ChatActivity : AppCompatActivity() {
         }
     }
 
-
-
-
-    /**
-     * Updates the action bar’s subtitle with a colored status indicator.
-     * If status is null or not provided, it will display "Offline".
-     */
-    private fun updateActionBarStatus(status: AgentStatus?) {
-        val drawableRes = when (status?.state) {
-            "running", "idle" -> R.drawable.ic_circle_green
-            "error" -> R.drawable.ic_circle_red
-            else -> R.drawable.ic_circle_white
-        }
-        val statusIcon = AppCompatResources.getDrawable(this, drawableRes)
-
-        // Get the color for the text.
-        val textColorRes = when (status?.state) {
-            "running", "idle" -> R.color.text_online
-            "error" -> R.color.text_error
-            else -> R.color.text_offline
-        }
-        val statusTextColor = ContextCompat.getColor(this, textColorRes)
-
-        val statusText = when (status?.state) {
-            "running", "idle" ->  " Online"
-            "error" -> " Error"
-            else -> " Offline"
-        }
-
-        val statusStr = "$statusText"
-
-        val spannable = SpannableStringBuilder("  $statusStr")
-        val spannable = SpannableStringBuilder(statusStr)
-        val circleSize = 0.8f // Adjust this value to change the size of the circle
-        spannable.setSpan(RelativeSizeSpan(circleSize), 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        supportActionBar?.subtitle = spannable
-    }
 
     private fun sendInstruction(instructionText: String) {
         // Add the user message locally.
@@ -252,7 +228,7 @@ class ChatActivity : AppCompatActivity() {
                         lastAgentState = status.state
                         handleAgentStateChange(status)
                     }
-                    updateActionBarStatus(status)
+                    updateCustomToolbarStatus(status)
                 } else {
                     showBanner("Poll status not successful", onlyIfRunning = true)
                 }
@@ -271,6 +247,17 @@ class ChatActivity : AppCompatActivity() {
             startTime = System.currentTimeMillis()
             timerHandler.post(timerRunnable)
         }
+    }
+
+    private fun updateCustomToolbarStatus(status: AgentStatus?) {
+        // Choose the appropriate drawable resource based on the status state.
+        val drawableRes = when (status?.state) {
+            "running", "idle" -> R.drawable.online_green
+            "error" -> R.drawable.need_h_red
+            else -> R.drawable.offline_grey // grey for offline or no connection
+        }
+        ivStatusIcon.setImageResource(drawableRes)
+        // (Optionally, you can adjust the ImageView's layout params here if needed.)
     }
 
     // Call this function when the task ends or stops
