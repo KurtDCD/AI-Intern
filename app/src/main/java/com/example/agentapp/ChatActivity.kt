@@ -16,6 +16,8 @@ import android.view.View
 import android.widget.TextView
 import android.widget.ImageButton
 import android.widget.ImageView
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -246,6 +248,7 @@ class ChatActivity : AppCompatActivity() {
             // record the start time for the timer (or retrieve it if already stored)
             startTime = System.currentTimeMillis()
             timerHandler.post(timerRunnable)
+            updateAppBarConstraints()
         }
     }
 
@@ -260,10 +263,29 @@ class ChatActivity : AppCompatActivity() {
         // (Optionally, you can adjust the ImageView's layout params here if needed.)
     }
 
+    private fun updateAppBarConstraints() {
+        // Get a reference to your container ConstraintLayout
+        val container = findViewById<ConstraintLayout>(R.id.containerLayout)
+        // Create and clone a ConstraintSet from your container
+        val constraintSet = ConstraintSet()
+        constraintSet.clone(container)
+
+        if (taskBar.visibility == View.VISIBLE) {
+            // When the task bar is visible, constrain topAppBar to the bottom of the task bar
+            constraintSet.connect(R.id.topAppBar, ConstraintSet.TOP, R.id.taskStatusBarInclude, ConstraintSet.BOTTOM)
+        } else {
+            // When the task bar is hidden, constrain topAppBar to the top of the container
+            constraintSet.connect(R.id.topAppBar, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP)
+        }
+        // Apply the updated constraints to the container
+        constraintSet.applyTo(container)
+    }
+
     // Call this function when the task ends or stops
     private fun hideTaskBar() {
         taskBar.visibility = View.GONE
         timerHandler.removeCallbacks(timerRunnable)
+        updateAppBarConstraints()
     }
 
     // Formats milliseconds to a string mm:ss

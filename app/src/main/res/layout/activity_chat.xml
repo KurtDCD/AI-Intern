@@ -42,34 +42,37 @@
             app:layout_constraintBottom_toTopOf="@+id/inputLayout"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
+
+        <!-- Input area (fixed at the bottom) -->
+        <LinearLayout
+            android:id="@+id/inputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:padding="8dp"
+            android:background="#00FFFFFF">
+            <EditText
+                android:id="@+id/messageEditText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/ios_input_background"
+                android:hint="Enter instruction..."
+                android:inputType="textMultiLine"
+                android:maxLines="4"
+                android:padding="12dp" />
+            <ImageButton
+                android:id="@+id/sendButton"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Send"
+                android:src="@android:drawable/ic_menu_send" />
+        </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!-- Input area (fixed at the bottom) -->
-    <LinearLayout
-        android:id="@+id/inputLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:orientation="horizontal"
-        android:padding="8dp"
-        android:background="#00FFFFFF">
-        <EditText
-            android:id="@+id/messageEditText"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@drawable/ios_input_background"
-            android:hint="Enter instruction..."
-            android:inputType="textMultiLine"
-            android:maxLines="4"
-            android:padding="12dp" />
-        <ImageButton
-            android:id="@+id/sendButton"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="Send"
-            android:src="@android:drawable/ic_menu_send" />
-    </LinearLayout>
+
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
