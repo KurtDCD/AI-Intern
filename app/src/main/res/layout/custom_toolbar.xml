@@ -4,21 +4,25 @@
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
     android:orientation="horizontal"
-    android:gravity="center_vertical">
+    android:gravity="center_vertical"
+    android:paddingStart="8dp"
+    android:paddingEnd="8dp">
 
-    <!-- Status Icon -->
+    <!-- Status Icon (the colored circle) -->
     <ImageView
         android:id="@+id/statusIcon"
-        android:layout_width="16dp"
-        android:layout_height="16dp"
-        android:layout_marginEnd="8dp"
+        android:layout_width="12dp"
+        android:layout_height="12dp"
+        android:layout_marginEnd="4dp"
         android:src="@drawable/offline_grey" />
 
-    <!-- Agent Name -->
+    <!-- Status Text (shows Online, Offline, or Error) -->
     <TextView
-        android:id="@+id/agentNameTextView"
+        android:id="@+id/statusTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Agent Name"
-        android:textAppearance="?attr/textAppearanceSubtitle1"/>
+        android:text="Offline"
+        android:textSize="12sp"
+        android:textColor="@color/black"
+        android:gravity="center_vertical"/>
 </LinearLayout>

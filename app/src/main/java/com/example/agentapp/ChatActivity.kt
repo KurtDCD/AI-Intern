@@ -69,7 +69,7 @@ class ChatActivity : AppCompatActivity() {
     }
 
     private lateinit var customToolbarView: View
-    private lateinit var tvAgentName: TextView
+    private lateinit var tvStatusText: TextView
     private lateinit var ivStatusIcon: ImageView
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -86,7 +86,7 @@ class ChatActivity : AppCompatActivity() {
             customView = customToolbarView
         }
         // Get references from the custom toolbar view
-        tvAgentName = customToolbarView.findViewById(R.id.agentNameTextView)
+        tvStatusText = customToolbarView.findViewById(R.id.statusTextView)
         ivStatusIcon = customToolbarView.findViewById(R.id.statusIcon)
 
         // Retrieve the agent from our repository.
@@ -255,12 +255,17 @@ class ChatActivity : AppCompatActivity() {
     private fun updateCustomToolbarStatus(status: AgentStatus?) {
         // Choose the appropriate drawable resource based on the status state.
         val drawableRes = when (status?.state) {
-            "running", "idle" -> R.drawable.online_green
-            "error" -> R.drawable.need_h_red
+            "running", "idle", "finished" -> R.drawable.online_green
+            "error", "waiting_for_user" -> R.drawable.need_h_red
             else -> R.drawable.offline_grey // grey for offline or no connection
         }
         ivStatusIcon.setImageResource(drawableRes)
-        // (Optionally, you can adjust the ImageView's layout params here if needed.)
+        val statusText = when (status?.state) {
+            "running", "idle", "finished" -> "Online"
+            "error", "waiting_for_user" -> "Needs assistance"
+            else -> "Offline"
+        }
+        tvStatusText.text = statusText
     }
 
     private fun updateAppBarConstraints() {

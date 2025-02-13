@@ -7,7 +7,8 @@ data class Agent(
     var serverPort: String,
     var screenshotCount: Int,
     var conversation: MutableList<ChatMessage> = mutableListOf(),
-    var progress: MutableList<ScreenshotEntry> = mutableListOf()
+    var progress: MutableList<ScreenshotEntry> = mutableListOf(),
+    var status: AgentStatus? = null  // new: current status from the server
 )
 
 data class ScreenshotEntry(
